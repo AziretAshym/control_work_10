@@ -4,10 +4,12 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { createNews } from '../newsThunks';
 import { selectCreateLoading } from '../newsSlice';
 import FileInput from '../../../Components/FileInput/FileInput.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const NewsForm = () => {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectCreateLoading);
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -16,6 +18,7 @@ const NewsForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(createNews({ title, content, image }));
+    navigate('/');
   };
 
   return (

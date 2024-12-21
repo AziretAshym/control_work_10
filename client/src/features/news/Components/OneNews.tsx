@@ -1,39 +1,50 @@
-import React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
-import { baseUrl } from '../../../GeneralConstants';
+import  { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useParams } from 'react-router-dom';
+import { fetchNewsById } from '../newsThunks';
+import { selectSelectedNews, selectFetchNewsByIdLoading } from '../newsSlice';
+import { CircularProgress, Typography, Box } from '@mui/material';
 
-interface Props {
-  id: string;
-  title: string;
-  created_at: string;
-  image?: string | null;
-}
+const OneNews = () => {
+  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id: string }>();
+  const selectedNews = useAppSelector(selectSelectedNews);
+  const isLoading = useAppSelector(selectFetchNewsByIdLoading);
 
-const OneNews: React.FC<Props> = ({ title, image, created_at }) => {
-  const messageImage = image ? `${baseUrl}/${image}` : '/assets/default_img.jpg';
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchNewsById(id));
+    }
+  }, [dispatch, id]);
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" marginTop={2}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!selectedNews) {
+    return (
+      <Typography variant="h6" textAlign="center" marginTop={2}>
+        News not found.
+      </Typography>
+    );
+  }
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image={messageImage}
-          alt={title}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {title}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {created_at}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <Box padding={2} width="100%">
+      <Typography variant="h3" textAlign="center">
+        {selectedNews.title}
+      </Typography>
+      {selectedNews.image && (
+        <img src={selectedNews.image} alt={selectedNews.title} style={{ maxWidth: '100%', marginTop: '40px', marginBottom: '40px' }} />
+      )}
+      <Typography variant="body1" textAlign="center">
+        {selectedNews.content}
+      </Typography>
+    </Box>
   );
 };
 

@@ -25,3 +25,15 @@ export const createNews = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchNewsById = createAsyncThunk(
+  'news/fetchNewsById',
+  async (id: string) => {
+    try {
+      const response = await axiosApi.get<INews>(`/news/${id}`);
+      return response.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
