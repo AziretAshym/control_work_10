@@ -1,6 +1,7 @@
 import express from 'express';
 import mysqlDb from "./mysqlDb";
 import newsRouter from "./routes/news/news";
+import commentsRouter from "./routes/commnets/commnets";
 
 const app = express();
 const port = 8000;
@@ -8,6 +9,7 @@ const port = 8000;
 app.use(express.json());
 
 app.use("/news", newsRouter);
+app.use("/comments", commentsRouter)
 
 const run = async () => {
     try {
