@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchNews } from '../newsThunks';
-import { selectFetchLoading, selectNews } from '../newsSlice';
+import { fetchNews, deleteNews } from '../newsThunks';
+import { selectFetchLoading, selectNews, selectDeleteLoading } from '../newsSlice';
 import Grid from '@mui/material/Grid2';
-import { CircularProgress, Typography } from '@mui/material';
+import { CircularProgress, Typography, Button, CardActions } from '@mui/material';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
@@ -14,6 +14,7 @@ const News = () => {
   const dispatch = useAppDispatch();
   const news = useAppSelector(selectNews);
   const isFetchLoading = useAppSelector(selectFetchLoading);
+  const isDeleteLoading = useAppSelector(selectDeleteLoading);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,10 @@ const News = () => {
 
   const handleCardClick = (id: string) => {
     navigate(`/news/${id}`);
+  };
+
+  const handleDeleteClick = (id: string) => {
+    dispatch(deleteNews(id));
   };
 
   return (
@@ -44,7 +49,7 @@ const News = () => {
             <Typography variant="h6">No news yet</Typography>
           ) : (
             news.map((oneNews) => (
-              <Card key={oneNews.id} sx={{width: '560px'}} onClick={() => handleCardClick(oneNews.id)}>
+              <Card key={oneNews.id} sx={{ width: '560px' }}>
                 <CardActionArea>
                   <CardMedia
                     component="img"
@@ -57,10 +62,21 @@ const News = () => {
                       {oneNews.title}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {oneNews.content}
+                      {oneNews.create_at}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
+                <CardActions>
+                  <Button size="small" onClick={() => handleCardClick(oneNews.id)}>Learn  more</Button>
+                  <Button size="small"
+                          onClick={() => {
+                            handleDeleteClick(oneNews.id);
+                          }}
+                          disabled={isDeleteLoading}
+                  >
+                    Delete
+                  </Button>
+                </CardActions>
               </Card>
             ))
           )}
