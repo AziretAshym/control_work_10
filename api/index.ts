@@ -2,10 +2,12 @@ import express from 'express';
 import mysqlDb from "./mysqlDb";
 import newsRouter from "./routes/news/news";
 import commentsRouter from "./routes/commnets/commnets";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/news", newsRouter);
