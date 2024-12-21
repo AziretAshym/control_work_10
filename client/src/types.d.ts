@@ -11,3 +11,13 @@ export interface INewsMutation {
   content: string;
   image: File | null;
 }
+
+export interface IComment {
+  id: string;
+  news_id: string;
+  author?: string;
+  text: string;
+}
+
+
+export type CommentWithoutId = Omit<Comment, "id">;
